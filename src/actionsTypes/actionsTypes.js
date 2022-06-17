@@ -6,6 +6,7 @@ const actionsTypes = {
   removeEvent: '[event] - REMOVE_EVENT',
   selectEvent: '[event] - SELECT_EVENT',
   loadingEvent: '[event] - LOADING_EVENT',
+  clearEvent: '[event] - CLEAR_EVENT',
 }
 
 

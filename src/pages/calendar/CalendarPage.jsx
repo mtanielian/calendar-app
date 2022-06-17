@@ -4,9 +4,11 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { format, addHours, parse ,startOfWeek ,getDay } from 'date-fns'
 import enUS from 'date-fns/locale/en-US'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Fab } from '@mui/material'
 import { Add, Calculate } from '@mui/icons-material'
+import { doOpenModal } from '../../actions/modal.actions'
+import { selectEvent } from '../../actions/event.actions'
 
 const locales = {
   'en-US': enUS,
@@ -23,8 +25,8 @@ const localizer = dateFnsLocalizer({
 
 const CalendarPage = () => {
   const [view, setView] = useState(localStorage.getItem('calendarView') || 'agenda')
-  const [open, setOpen] = useState(false)
   const { events } = useSelector(state => state.events)
+  const dispatch = useDispatch()
   
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
@@ -42,8 +44,7 @@ const CalendarPage = () => {
   }
 
   const onDoubleClick = (event) => {
-    console.log({onDoubleClick: event})
-    setOpen(true)
+    dispatch(selectEvent(event))
   }
 
   const onClick = (event) => {
@@ -69,13 +70,12 @@ const CalendarPage = () => {
         onView={onViewChange}
         defaultView={view}
       />
-      <ModalEvent
-        open={open}
-        setOpen={setOpen}
-      />
+      <ModalEvent />
       <Fab 
         color="primary" aria-label="add" 
-        sx={{ position: 'absolute', bottom: 70, right: 16, padding: 4}}>
+        sx={{ position: 'absolute', bottom: 70, right: 16, padding: 4}}
+        onClick={() => dispatch(doOpenModal(true))}
+      >
         <Add />
       </Fab>
     </>

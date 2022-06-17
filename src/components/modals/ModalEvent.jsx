@@ -1,10 +1,15 @@
-import { Modal, Box, Grid, Typography, TextField, Divider, Button } from "@mui/material"
-import { SaveOutlined } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { differenceInSeconds } from "date-fns";
-import { useDispatch, useSelector } from "react-redux";
-import { addEvent } from "../../actions/event.actions";
-import Swal from "sweetalert2";
+import { addEvent, doClearEvent, removeEvent, updateEvent } from "../../actions/event.actions";
+import { doOpenModal } from "../../actions/modal.actions";
+import { Modal, Box, Grid, Typography, TextField, Divider, Button } from "@mui/material"
+import { DeleteOutline, SaveOutlined } from "@mui/icons-material";
+import { useEffect } from "react";
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.css'
+
+
 
 const style = {
   position: 'absolute',
@@ -25,20 +30,68 @@ let now = new Date()
 now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
 const date = now.toISOString().slice(0,16)
 
-const ModalEvent = ({ open = false, setOpen = () => {} }) => {
+const ModalEvent = () => {
+  const { event } = useSelector(state => state.events)
   const {register, handleSubmit, formState: { errors }, getValues, reset } = useForm()
-  const dispatch = useDispatch()
   const { loading } = useSelector(state => state.events)
+  const { open } = useSelector(state => state.modal)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (event._id) {
+      console.log('event.id')
+      const dateStart = new Date(event.start)
+      let start = dateStart.setMinutes(dateStart.getMinutes() - dateStart.getTimezoneOffset())
+      start = dateStart.toISOString().slice(0,16)
+
+      const dateEnd = new Date(event.end)
+      let end = dateEnd.setMinutes(dateEnd.getMinutes() - dateEnd.getTimezoneOffset())
+      end = dateEnd.toISOString().slice(0,16)
+      
+      reset({...event, start, end})
+    }
+  }, [event])
 
   const onSubmit = (form) => {
-    dispatch(addEvent(form))
-    reset()
+    if (event._id) {
+      dispatch(updateEvent(form))
+    } else {
+      dispatch(addEvent(form))
+    }
+    reset({})
+    dispatch(doOpenModal(false))
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: 'Event saved',
+      showConfirmButton: false,
+      timer: 3500
+    })
+  }
+
+  const onCloseModal = () => {
+    reset({})
+    dispatch(doClearEvent())
+    dispatch(doOpenModal(false))
+  }
+
+  const onRemoveClick = async () => {
+    const response = await Swal.fire({
+      title: 'Do you want to remove this event?',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',      
+    })
+    
+    if (response.isConfirmed) {
+      dispatch(removeEvent(event._id))
+      onCloseModal()
+    }
   }
 
   return (
     <Modal
       open={open}
-      onClose={() => setOpen(false)}
+      onClose={onCloseModal}
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
     >
@@ -109,6 +162,18 @@ const ModalEvent = ({ open = false, setOpen = () => {} }) => {
               />
             </Grid>
             <Grid item xs={12}>
+            { event._id &&
+            
+            <Button 
+                type='button' 
+                variant="outlined" 
+                color="error"
+                startIcon={<DeleteOutline />}
+                onClick={onRemoveClick}
+                sx={{ mr: 2 }}
+              >
+                Delete
+              </Button>}
               <Button 
                 type='submit' variant="outlined" 
                 startIcon={<SaveOutlined />}

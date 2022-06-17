@@ -12,14 +12,15 @@ const eventReducer = (state = INITIAL_STATE, action) => {
     case actionsTypes.addEvent:
       return { ...state, events: [...state.events, action.payload], loading: false }
     case actionsTypes.updateEvent:
-      return { ...state, events: state.events.map(event => event.id === action.payload.id ? action.payload : event), loading: false }
+      return { ...state, events: state.events.map(event => event._id === action.payload._id ? action.payload : event), event: {}, loading: false }
     case actionsTypes.removeEvent:
-      return { ...state, events: state.events.filter(event => event.id !== action.payload), loading: false }
+      return { ...state, events: state.events.filter(event => event._id !== action.payload), loading: false }
     case actionsTypes.selectEvent:
       return { ...state, event: action.payload, loading: false }
     case actionsTypes.loadingEvent:
-      console.log('actionsTypes.loadingEvent: ', action.payload)
       return { ...state, loading: action.payload }
+    case actionsTypes.clearEvent:
+      return { ...state, event: {}, loading: false }
     default:
       return state;
   }
