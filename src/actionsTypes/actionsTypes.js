@@ -11,6 +11,7 @@ const actionsTypes = {
   logout: '[auth] - LOGOUT',
   loadingAuth: '[auth] - LOADING',
   errorAuth: '[auth] - ERROR',
+  loadEvents: '[event] - LOAD_EVENTS',
 }
 
 

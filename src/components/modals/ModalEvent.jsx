@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { differenceInSeconds } from "date-fns";
-import { addEvent, doClearEvent, removeEvent, updateEvent } from "../../actions/event.actions";
+import { doAddEvent, doClearEvent, doRemoveEvent, doUpdateEvent } from "../../actions/event.actions";
 import { doOpenModal } from "../../actions/modal.actions";
 import { Modal, Box, Grid, Typography, TextField, Divider, Button } from "@mui/material"
 import { DeleteOutline, SaveOutlined } from "@mui/icons-material";
@@ -39,7 +39,6 @@ const ModalEvent = () => {
 
   useEffect(() => {
     if (event._id) {
-      console.log('event.id')
       const dateStart = new Date(event.start)
       let start = dateStart.setMinutes(dateStart.getMinutes() - dateStart.getTimezoneOffset())
       start = dateStart.toISOString().slice(0,16)
@@ -54,9 +53,9 @@ const ModalEvent = () => {
 
   const onSubmit = (form) => {
     if (event._id) {
-      dispatch(updateEvent(form))
+      dispatch(doUpdateEvent(form))
     } else {
-      dispatch(addEvent(form))
+      dispatch(doAddEvent(form))
     }
     reset({})
     dispatch(doOpenModal(false))
@@ -83,7 +82,7 @@ const ModalEvent = () => {
     })
     
     if (response.isConfirmed) {
-      dispatch(removeEvent(event._id))
+      dispatch(doRemoveEvent(event._id))
       onCloseModal()
     }
   }
