@@ -1,6 +1,12 @@
+import { useSelector } from "react-redux"
+import { Navigate } from "react-router-dom"
 import NavBar from "../components/navBar/NavBar"
 
 const MainLayout = ({ children }) => {
+  const { logged } = useSelector(state => state.auth)
+  if (!logged)
+    return <Navigate to='/auth/login' />
+
   return (
     <>
       <NavBar />

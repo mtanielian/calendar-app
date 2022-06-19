@@ -7,6 +7,10 @@ const actionsTypes = {
   selectEvent: '[event] - SELECT_EVENT',
   loadingEvent: '[event] - LOADING_EVENT',
   clearEvent: '[event] - CLEAR_EVENT',
+  login: '[auth] - LOGIN',
+  logout: '[auth] - LOGOUT',
+  loadingAuth: '[auth] - LOADING',
+  errorAuth: '[auth] - ERROR',
 }
 
 

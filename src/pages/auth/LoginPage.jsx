@@ -1,13 +1,17 @@
 import { useForm } from "react-hook-form";
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import { Button, Chip, Grid, TextField, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom";
+import { doLogin } from "../../actions/auth.actions";
+import { useDispatch, useSelector } from "react-redux";
 
 const LoginPage = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { error } = useSelector(state => state.auth)
 
   const onSubmit = (form) => {
-
+    dispatch(doLogin(form))
   }
 
   
@@ -15,6 +19,7 @@ const LoginPage = () => {
     <Grid container spacing={2} sx={{justifyContent: "center", alignItems: 'center'}}>
       <Grid item xs={3} textAlign='center'>
         <Typography variant="h6" component='h6'>LOGIN</Typography>
+        {error && <Chip label="Email or password incorrect" color="error" />}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid item xs={12} mt={2}>
             <TextField 
@@ -40,7 +45,7 @@ const LoginPage = () => {
               label='Password'
               { ...register('password', {
                 required: 'Password is required',
-                minLength: { value: 8, message: '+7 characters' }
+                minLength: { value: 6, message: '+5 characters' }
               })}
               error={!!errors.password}
               helperText={errors.password?.message}

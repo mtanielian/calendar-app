@@ -1,6 +1,11 @@
-import { Calculate } from "@mui/icons-material"
+import { useSelector } from "react-redux"
+import { Navigate } from "react-router-dom"
 
 const AuthLayout = ({ children }) => {
+  const { logged }= useSelector(state => state.auth)
+  if (logged)
+    return <Navigate to='/' />
+
   return (
     <main style={{
       display: 'flex',

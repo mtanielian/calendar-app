@@ -1,12 +1,12 @@
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
 import ModalEvent from '../../components/modals/ModalEvent'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { format, addHours, parse ,startOfWeek ,getDay } from 'date-fns'
+import { format, parse ,startOfWeek ,getDay } from 'date-fns'
 import enUS from 'date-fns/locale/en-US'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Fab } from '@mui/material'
-import { Add, Calculate } from '@mui/icons-material'
+import { Add } from '@mui/icons-material'
 import { doOpenModal } from '../../actions/modal.actions'
 import { selectEvent } from '../../actions/event.actions'
 
@@ -28,6 +28,8 @@ const CalendarPage = () => {
   const { events } = useSelector(state => state.events)
   const dispatch = useDispatch()
   
+  console.log(import.meta.env)
+
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
       backgroundColor: '#347CF7',

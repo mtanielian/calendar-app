@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import { doRenewToken } from '../actions/auth.actions'
 import AuthLayout from '../layouts/AuthLayout'
 import MainLayout from '../layouts/MainLayout'
 import LoginPage from '../pages/auth/LoginPage'
@@ -6,6 +9,17 @@ import RegisterPage from '../pages/auth/RegisterPage'
 import CalendarPage from '../pages/calendar/CalendarPage'
 
 const AppRouter = () => {
+  const dispatch = useDispatch()
+  const { loading } = useSelector(state => state.auth)
+  useEffect(() => {
+    dispatch(doRenewToken())
+  }, [])
+
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
   return (
     <BrowserRouter>
       <Routes>
